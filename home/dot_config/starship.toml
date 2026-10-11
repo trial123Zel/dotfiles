@@ -1,0 +1,76 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Blank line between prompts (p10k default behaviour)
+add_newline = true
+
+# Line 1: ╭─ dir git venv ····· duration status user@host time
+# Line 2: ╰─❯
+format = """
+[╭─](bright-black) $directory$git_branch$git_status$python\
+$fill \
+$cmd_duration$status$username$hostname $time
+[╰─](bright-black)$character"""
+
+[fill]
+symbol = '·'
+style = 'bright-black'
+
+[directory]
+format = '[$path]($style)[$read_only]($read_only_style) '
+style = 'bold cyan'
+truncation_length = 4
+truncate_to_repo = true
+read_only = ' 󰌾'
+
+[git_branch]
+format = '[$symbol$branch]($style) '
+symbol = ' '
+style = 'green'
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = 'yellow'
+
+# Only show when a virtualenv is active (not just because .py files exist)
+[python]
+format = '[(\($virtualenv\) )]($style)'
+detect_extensions = []
+detect_files = []
+style = 'yellow'
+
+# Like p10k: show runtime of slow commands
+[cmd_duration]
+min_time = 3_000
+format = '[$duration]($style) '
+style = 'yellow'
+
+# Like p10k: show non-zero exit code (disabled by default in starship)
+[status]
+disabled = false
+format = '[✘ $status]($style) '
+style = 'red'
+
+# p10k default only shows user@host over SSH/as root.
+# Set show_always = false / ssh_only = true to match that.
+[username]
+show_always = true
+format = '[$user]($style)'
+style_user = 'yellow'
+style_root = 'bold red'
+
+[hostname]
+ssh_only = false
+format = '[@$hostname]($style)'
+style = 'yellow'
+
+[time]
+disabled = false
+time_format = '%H:%M:%S'
+format = '[$time]($style)'
+style = 'bright-black'
+
+# ❯ green on success, red on failure
+[character]
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
+vimcmd_symbol = '[❮](bold green)'

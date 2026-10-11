@@ -1,0 +1,31 @@
+alias dc='docker compose'
+alias dcup='docker compose up -d --force-recreate'
+alias dcdown='docker compose down'
+alias dclogs='docker compose logs -f'
+alias dcpull='docker compose pull'
+alias dcps='docker compose ps'
+alias dps='docker ps'
+alias dcex='docker exec -it'
+alias dcdev='docker compose -f docker-compose.dev.yml'
+
+{{ if eq .chezmoi.os "darwin" -}}
+alias update='brew update && brew upgrade && brew cleanup'
+{{- else if eq .chezmoi.osRelease.id "ubuntu" -}}
+alias update='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+{{- end }}
+
+export EDITOR=nano
+export VISUAL="$EDITOR"
+
+function psa {
+    if [[ -z "$1" ]]; then
+        ps aux
+    else
+        ps aux | grep "$@" | grep -v grep
+    fi
+}
+
+# Connection details live in ~/.pg_service.conf ([tsdb] section), password in ~/.pgpass
+tsdb() {
+    psql "service=tsdb" -c "$1"
+}

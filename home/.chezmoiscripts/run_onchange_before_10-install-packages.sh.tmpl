@@ -1,0 +1,37 @@
+#!/bin/bash
+# Installs the tools the dotfiles depend on. Re-runs whenever this file changes.
+set -euo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+if ! command -v brew >/dev/null 2>&1; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+brew install git starship bat libpq
+brew install --cask font-jetbrains-mono-nerd-font
+
+{{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
+sudo apt-get update
+sudo apt-get install -y zsh git curl bat postgresql-client
+
+if ! command -v starship >/dev/null 2>&1; then
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+fi
+
+if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$(command -v zsh)" ]]; then
+    chsh -s "$(command -v zsh)"
+fi
+
+{{ end -}}
+# nvm (both OSes). PROFILE=/dev/null stops the installer from editing ~/.zshrc, which chezmoi owns.
+if [[ ! -s "$HOME/.nvm/nvm.sh" ]]; then
+    curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | PROFILE=/dev/null bash
+    export NVM_DIR="$HOME/.nvm"
+    . "$NVM_DIR/nvm.sh"
+    nvm install --lts
+fi
