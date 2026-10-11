@@ -8,6 +8,8 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
 elif [[ -x /usr/local/bin/brew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
+# brew shellenv exports FPATH; keep it shell-local so child shells build their own
+typeset +x FPATH
 # libpq is keg-only; expose psql
 [[ -d "$HOMEBREW_PREFIX/opt/libpq/bin" ]] && export PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"
 

@@ -1,15 +1,20 @@
-alias dc='docker compose'
-alias dcup='docker compose up -d --force-recreate'
-alias dcdown='docker compose down'
-alias dclogs='docker compose logs -f'
-alias dcpull='docker compose pull'
-alias dcps='docker compose ps'
+{{- /* macOS hosts ship the standalone docker-compose binary, not the compose plugin */ -}}
+{{ $dc := "docker compose" }}{{ if eq .chezmoi.os "darwin" }}{{ $dc = "docker-compose" }}{{ end -}}
+alias dc='{{ $dc }}'
+alias dcup='{{ $dc }} up -d --force-recreate'
+alias dcdown='{{ $dc }} down'
+alias dclogs='{{ $dc }} logs -f'
+alias dcpull='{{ $dc }} pull'
+alias dcps='{{ $dc }} ps'
 alias dps='docker ps'
 alias dcex='docker exec -it'
-alias dcdev='docker compose -f docker-compose.dev.yml'
+alias dcdev='{{ $dc }} -f docker-compose.dev.yml'
 
 {{ if eq .chezmoi.os "darwin" -}}
 alias update='brew update && brew upgrade && brew cleanup'
+alias drink='update'
+alias ll='ls -lah'
+alias ip='ipconfig getifaddr en0 && curl ifconfig.me'
 {{- else if eq .chezmoi.osRelease.id "ubuntu" -}}
 alias update='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 {{- end }}

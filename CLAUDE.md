@@ -33,11 +33,11 @@ On a new machine: `sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init 
 
 - Branch on OS with `{{ if eq .chezmoi.os "darwin" }}` / `{{ else if eq .chezmoi.osRelease.id "ubuntu" }}`. `.chezmoi.osRelease` doesn't exist on macOS, so always test `.chezmoi.os` first.
 - Don't hardcode home paths, usernames or tool versions. Use `$HOME`, derive paths at runtime (as `NODE_PATH` does from `${commands[node]}`), and check that a command exists with `(( $+commands[x] ))`.
-- On macOS, Homebrew is initialized at the top of `.zshrc` (`/opt/homebrew`, falling back to `/usr/local`). Keg-only formulas like `libpq` need explicit `PATH` entries there. On Ubuntu, `bat` is named `batcat`, and the zsh-bat plugin handles that.
+- On macOS, Homebrew is initialized at the top of `.zshrc` (`/opt/homebrew`, falling back to `/usr/local`), followed by `typeset +x FPATH`: `brew shellenv` exports `FPATH`, and an inherited `FPATH` from a different or removed zsh breaks `compinit` with "function definition file not found". Use the system `/bin/zsh` on macOS, not Homebrew's zsh. Keg-only formulas like `libpq` need explicit `PATH` entries there. On Ubuntu, `bat` is named `batcat`, and the zsh-bat plugin handles that.
 - Starship is initialized last in `.zshrc`. The Oh My Zsh theme is intentionally empty.
 
 ## Secrets and privacy
 
-This repo is meant to be **public**. Keep secrets, private IPs and hostnames out of it. For example, `tsdb` connects with `psql "service=tsdb"`, which reads the connection details from the untracked `~/.pg_service.conf` and the password from `~/.pgpass`. If a secret ever needs to be deployed, use chezmoi's age encryption or a password-manager template function. Never commit plaintext.
+This repo is meant to be **public**. Keep secrets, private IPs and hostnames out of it. For example, `tsdb` connects with `psql "service=tsdb"`, which reads the connection details from the untracked `~/.pg_service.conf` and the password from `~/.pgpass`. `~/.zshenv` and `~/.zprofile` are deliberately unmanaged and machine-local. On the macOS host, `~/.zshenv` (mode 600) unlocks the login keychain for every SSH session, so automations work. If a secret ever needs to be deployed, use chezmoi's age encryption or a password-manager template function. Never commit plaintext.
 
 Per the user's global rules, Python dependencies always go in a virtualenv, never on the host.
