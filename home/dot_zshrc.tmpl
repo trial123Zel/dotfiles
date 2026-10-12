@@ -66,7 +66,9 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting you-should-use zsh-bat gitignore git-auto-fetch)
+plugins=(git sudo extract colored-man-pages command-not-found gitignore git-auto-fetch you-should-use zsh-bat zsh-autosuggestions)
+(( $+commands[zoxide] )) && plugins+=(zoxide)  # plugin warns on every start if the binary is missing
+plugins+=(zsh-syntax-highlighting)  # must load last
 
 source $ZSH/oh-my-zsh.sh
 source "$HOME/.config/zsh/aliases.zsh"

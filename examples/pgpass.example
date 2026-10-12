@@ -1,0 +1,6 @@
+# Copy to ~/.pgpass and run: chmod 600 ~/.pgpass  (libpq ignores the file if it is group/world readable)
+# Format: hostname:port:database:username:password  (one per line, first match wins, * is a wildcard)
+# Values must match the [tsdb] entry in ~/.pg_service.conf exactly. Escape ':' and '\' in values with '\'.
+# Never commit the real file.
+
+db.example.internal:5432:market_data:postgres:CHANGE_ME

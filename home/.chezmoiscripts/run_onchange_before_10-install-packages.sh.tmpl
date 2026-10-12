@@ -11,12 +11,12 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
 else
     eval "$(/usr/local/bin/brew shellenv)"
 fi
-brew install git starship bat libpq
+brew install git starship bat libpq zoxide
 brew install --cask font-jetbrains-mono-nerd-font
 
 {{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
 sudo apt-get update
-sudo apt-get install -y zsh git curl bat postgresql-client
+sudo apt-get install -y zsh git curl bat zoxide command-not-found postgresql-client
 
 if ! command -v starship >/dev/null 2>&1; then
     mkdir -p "$HOME/.local/bin"

@@ -1,0 +1,12 @@
+# Copy to ~/.pg_service.conf (chmod 600) and fill in. Used by the `tsdb` alias: psql "service=tsdb".
+# Any libpq tool can connect by name: psql service=tsdb, or PGSERVICE=tsdb in the environment.
+# Never commit the real file; it reveals internal hosts.
+
+[tsdb]
+host=db.example.internal
+port=5432
+dbname=market_data
+user=postgres
+# Optional:
+# sslmode=prefer
+# connect_timeout=10

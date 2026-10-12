@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal zsh dotfiles managed by [chezmoi](https://chezmoi.io). The targets are **Ubuntu Server 24.04+ and macOS**, and the repo is meant to grow. It has no build, lint or test tooling.
 
-`.chezmoiroot` points chezmoi at `home/`. Everything under `home/` maps onto `~`, while files at the repo root (like this one) are never deployed. chezmoi's naming rules apply: `dot_` becomes `.`, a `.tmpl` suffix marks a Go template, and `.chezmoiscripts/run_onchange_*` scripts re-run whenever their content changes.
+`.chezmoiroot` points chezmoi at `home/`. Everything under `home/` maps onto `~`, while files at the repo root (this file, `README.md`, `examples/`) are never deployed. Keep the README's inventory tables in sync when you add a dotfile, app or plugin. `examples/` holds placeholder versions of local-only files such as `~/.pg_service.conf` and `~/.pgpass`. chezmoi's naming rules apply: `dot_` becomes `.`, a `.tmpl` suffix marks a Go template, and `.chezmoiscripts/run_onchange_*` scripts re-run whenever their content changes.
 
 - `home/dot_zshrc.tmpl` → `~/.zshrc`
 - `home/dot_config/zsh/aliases.zsh.tmpl` → `~/.config/zsh/aliases.zsh`, sourced explicitly by `.zshrc`. Don't put `.zsh` files in `$ZSH_CUSTOM`: Oh My Zsh auto-sources them, so they would load twice.
 - `home/dot_config/starship.toml` → `~/.config/starship.toml`. It reproduces a Powerlevel10k look: a two-line `╭─`/`╰─❯` layout with a `$fill` separator. The python module shows only an active virtualenv because its file detection is turned off on purpose. Username and hostname are always shown.
-- `home/.chezmoiexternal.toml` clones Oh My Zsh and the third-party plugins as git repos and pulls them weekly. Add new plugins here and to `plugins=(...)` in `.zshrc`.
+- `home/.chezmoiexternal.toml` clones Oh My Zsh and the third-party plugins as git repos and pulls them weekly. Add new plugins here and to `plugins=(...)` in `.zshrc`. Keep `zsh-syntax-highlighting` last. Load plugins that wrap an external binary (like `zoxide`) only when the binary exists, using `(( $+commands[x] )) && plugins+=(x)`.
 - `home/.chezmoiscripts/run_onchange_before_10-install-packages.sh.tmpl` installs dependencies (apt, or Homebrew on macOS), starship, nvm and node LTS, and on Ubuntu runs `chsh` to zsh.
 - `home/.chezmoi.toml.tmpl` generates `~/.config/chezmoi/chezmoi.toml`. It sets `sourceDir` to the repo root and pins `umask = 0o022`.
 
